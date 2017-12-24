@@ -6,11 +6,18 @@ $('#search').click(searchCountries);
 
 function searchCountries() {
     var countryName = $('#country-name').val();
-    if(!countryName.length) countryName = 'Poland';
     $.ajax({
         url: url + countryName,
         method: 'GET',
-        success: showCountriesList
+        success: showCountriesList,
+        error: function errorActions() {
+            if (countryName === '') {
+                countriesList.empty();
+                $('<h3>').text('Wpisz nazwę państwa').appendTo(countriesList);
+            } else {
+                errorCountry();
+            }
+        }
     });
 }
 
@@ -21,6 +28,10 @@ function showCountriesList(resp) {
         $('<h3>').text('Background Infromation: ').appendTo(countriesList);
         $('<li>').text('Country: ' + item.name).appendTo(countriesList);
         $('<li>').text('Capital: ' + item.capital).appendTo(countriesList);
-        
     });
   }
+
+  function errorCountry(resp) {
+    countriesList.empty();
+    $('<h3>').text('Nie ma takiego państwa').appendTo(countriesList);
+}
